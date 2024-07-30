@@ -1,9 +1,9 @@
 import pygame
 import os
-from .map import game_matrix, list_block
+from .map import list_block
 
 screen = pygame.display.set_mode((800, 450))
-class Class:
+class Sprite:
     def __init__(self, width, height, x, y, image_name):
         self.WIDTH = width
         self.HEIGHT = height
@@ -21,7 +21,7 @@ class Class:
     def show_sprite(self):
         screen.blit(self.IMAGE, (self.X, self.Y))
         
-class Person(Class):
+class Person(Sprite):
     def __init__(self, width, height, x, y, image_name, speed, gravity):
         super().__init__(width, height, x, y, image_name)
         self.SPEED = speed
@@ -65,33 +65,5 @@ class Person(Class):
                 self.FALL = True
                 break
         
-background = Class(800, 400, 0, 0, 'screen/1.jpeg')
+background = Sprite(800, 400, 0, 0, 'screen/1.jpeg')
         
-x = 0
-y = 0
-for i in game_matrix:
-    for j in i:
-        if j == 1:
-            block = Class(25, 25, x, y, 'tilemap/level_1/1.png')
-            list_block.append(block)
-        elif j == 2:
-            block = Class(25, 25, x, y, 'tilemap/level_1/2.png')
-            list_block.append(block)
-        elif j == 3:
-            block = Class(25, 25, x, y, 'tilemap/level_1/3.png')
-            list_block.append(block)
-        elif j == 4:
-            block = Class(25, 25, x, y, 'tilemap/level_1/4.png')
-            list_block.append(block)
-        elif j == 5:
-            block = Class(25, 25, x, y, 'tilemap/level_1/5.png')
-            list_block.append(block)
-        elif j == 6:
-            block = Class(25, 25, x, y, 'tilemap/level_1/6.png')
-            list_block.append(block)
-        elif j == 7:
-            block = Class(25, 25, x, y, 'tilemap/level_1/7.png')
-            list_block.append(block)
-        x += 25
-    y += 25
-    x = 0
