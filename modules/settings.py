@@ -45,7 +45,7 @@ class Person(Sprite):
     def check_move_right(self): 
         for block in list_block: 
             
-            if self.X + self.WIDTH > block.X - 3 and self.X < block.X + block.WIDTH and self.Y + self.HEIGHT > block.Y and self.Y < block.Y + block.HEIGHT: 
+            if self.X + self.WIDTH > block.X - self.SPEED - 1 and self.X < block.X + block.WIDTH and self.Y + self.HEIGHT > block.Y and self.Y < block.Y + block.HEIGHT: 
                 self.CAN_MOVE_R = False 
                 
                 break 
@@ -53,7 +53,7 @@ class Person(Sprite):
                 self.CAN_MOVE_R = True 
     def check_move_left(self):
         for block in list_block:
-            if self.Y + self.HEIGHT > block.Y and self.Y < block.Y + block.HEIGHT and self.X < block.X + block.WIDTH + 3 and self.X + self.WIDTH > block.X:
+            if self.Y + self.HEIGHT > block.Y and self.Y < block.Y + block.HEIGHT and self.X < block.X + block.WIDTH + self.SPEED + 2 and self.X + self.WIDTH > block.X:
                 self.CAN_MOVE_L = False
                 break
             else:

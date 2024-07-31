@@ -8,6 +8,8 @@ class Hero(Person):
         self.DIRECTION = 'r'
         self.JUMP_HEIGHT = jump_height
         self.JUMP_COUNT = 0
+        self.COUNT_CROUCH = 0
+        self.HEARTS = 1
     def move(self):
         keys = key.get_pressed()
         self.check_move_left()
@@ -16,9 +18,12 @@ class Hero(Person):
             self.X -= self.SPEED
             self.DIRECTION = 'l'
             if self.JUMP_COUNT > 0:
-                self.IMAGE_NAME = 'player/jump/player-jump-1.png'
+                self.IMAGE_NAME = 'player/jump/0.png'
             elif self.FALL:
-                self.IMAGE_NAME = 'player/jump/player-jump-2.png'
+                self.IMAGE_NAME = 'player/gravity/0.png'
+            elif keys[K_c]:
+                self.COUNT_CROUCH += 1
+                self.crouch()
             else:
                 self.COUNT_ANIMATION += 1
                 self.animation()
@@ -27,9 +32,12 @@ class Hero(Person):
             self.X += self.SPEED
             self.DIRECTION = 'r'
             if self.JUMP_COUNT > 0:
-                self.IMAGE_NAME = 'player/jump/player-jump-1.png'
+                self.IMAGE_NAME = 'player/jump/0.png'
             elif self.FALL:
-                self.IMAGE_NAME = 'player/jump/player-jump-2.png'
+                self.IMAGE_NAME = 'player/gravity/0.png'
+            elif keys[K_c]:
+                self.COUNT_CROUCH += 1
+                self.crouch()
             else:
                 self.COUNT_ANIMATION += 1
                 self.animation()
@@ -37,17 +45,21 @@ class Hero(Person):
         else:
             if self.DIRECTION == 'r':
                 if self.JUMP_COUNT > 0:
-                    self.IMAGE_NAME = 'player/jump/player-jump-1.png'
+                    self.IMAGE_NAME = 'player/jump/0.png'
                 elif self.FALL:
-                    self.IMAGE_NAME = 'player/jump/player-jump-2.png'
+                    self.IMAGE_NAME = 'player/gravity/0.png'
+                elif keys[K_c]:
+                    self.IMAGE_NAME = 'player/crouch/player-crouch-1.png'
                 else:
                     self.IMAGE_NAME = 'player/idle/0.png'
                 self.load_image()
             elif self.DIRECTION == 'l':
                 if self.JUMP_COUNT > 0:
-                    self.IMAGE_NAME = 'player/jump/player-jump-1.png'
+                    self.IMAGE_NAME = 'player/jump/0.png'
                 elif self.FALL:
-                    self.IMAGE_NAME = 'player/jump/player-jump-2.png'
+                    self.IMAGE_NAME = 'player/gravity/0.png'
+                elif keys[K_c]:
+                    self.IMAGE_NAME = 'player/crouch/player-crouch-1.png'
                 else:
                     self.IMAGE_NAME = 'player/idle/0.png'
                 self.load_image(True)
@@ -57,6 +69,12 @@ class Hero(Person):
             animation = 0
             self.COUNT_ANIMATION = 0
         self.IMAGE_NAME = f'player/run/{animation}.png'
+    def crouch(self):
+        animation = self.COUNT_CROUCH // 10
+        if animation == 2:
+            animation = 0
+            self.COUNT_CROUCH = 0
+        self.IMAGE_NAME = f'player/crouch/player-crouch-{animation}.png'
     def jump(self):
         keys = key.get_pressed() 
         self.check_jump() 
@@ -66,3 +84,8 @@ class Hero(Person):
         if self.JUMP_COUNT > 0: 
             self.Y -= self.JUMP_HEIGHT
             self.JUMP_COUNT -= 1 
+    def enemy_colision(self, enemy):
+        rect_hero = Rect(self.X, self.Y, self.WIDTH, self.HEIGHT)
+        rect_enemy = Rect(enemy.X, enemy.Y, enemy.WIDTH, enemy.HEIGHT)
+        if rect_hero.colliderect(rect_enemy):
+            self.HEARTS -= 1
