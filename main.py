@@ -27,9 +27,11 @@ while start:
             text_food = font.render(f"{0 + counter}", True, (0, 0, 0))
         if counter > 0:
             screen.blit(text_food, (740, 19))
-    enemy.show_sprite()
-    enemy.move_enemy()
-    hero.enemy_colision(enemy)
+    
+    if enemy.HEARTS > 0:
+        enemy.show_sprite()
+        # enemy.move_enemy()
+        enemy.hero_colision(hero)
     if hero.HEARTS > 0:
         hero.show_sprite()
         hero.move()

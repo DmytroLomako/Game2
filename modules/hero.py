@@ -84,8 +84,3 @@ class Hero(Person):
         if self.JUMP_COUNT > 0: 
             self.Y -= self.JUMP_HEIGHT
             self.JUMP_COUNT -= 1 
-    def enemy_colision(self, enemy):
-        rect_hero = Rect(self.X, self.Y, self.WIDTH, self.HEIGHT)
-        rect_enemy = Rect(enemy.X, enemy.Y, enemy.WIDTH, enemy.HEIGHT)
-        if rect_hero.colliderect(rect_enemy):
-            self.HEARTS -= 1
