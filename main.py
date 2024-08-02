@@ -7,7 +7,7 @@ from modules.enemy import Enemy
 pygame.init()
 pygame.display.set_caption("Game")
 hero = Hero(50, 50, 100, 250, 'player/idle/0.png', 4, 3, 5)
-enemy = Enemy(40, 40, 540, 360, 'enemy/idle/0.png', 4, 4, 'r')
+enemy = Enemy(40, 40, 540, 360, 'enemy/idle/0.png', 2, 3, 'r', 4)
 font = pygame.font.Font(None, 36)
 counter = 0
 clock = pygame.time.Clock()
@@ -30,7 +30,7 @@ while start:
     
     if enemy.HEARTS > 0:
         enemy.show_sprite()
-        # enemy.move_enemy()
+        enemy.move_enemy()
         enemy.hero_colision(hero)
     if hero.HEARTS > 0:
         hero.show_sprite()
