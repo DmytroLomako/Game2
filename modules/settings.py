@@ -22,13 +22,14 @@ class Sprite:
         screen.blit(self.IMAGE, (self.X, self.Y))
         
 class Person(Sprite):
-    def __init__(self, width, height, x, y, image_name, speed, gravity):
+    def __init__(self, width, height, x, y, image_name, speed, gravity, crouching_ability = 0):
         super().__init__(width, height, x, y, image_name)
         self.SPEED = speed
         self.FALL = True
         self.GRAVITY = gravity
         self.CAN_MOVE_R = True 
         self.CAN_MOVE_L = True 
+        self.CROUCHING_ABILITY = crouching_ability
     def hero_fell(self):
         self.check_fall()
         if self.JUMP_COUNT == 0:
@@ -36,7 +37,7 @@ class Person(Sprite):
                 self.Y += self.GRAVITY
     def check_fall(self):
         for block in list_block:
-            if self.Y + self.HEIGHT > block.Y - 2 and self.X < block.X + block.WIDTH and self.X + self.WIDTH > block.X and self.Y < block.Y + block.HEIGHT: 
+            if self.Y + self.HEIGHT > block.Y - 2 and self.X < block.X + block.WIDTH and self.X + self.WIDTH > block.X and self.Y < block.Y + block.HEIGHT - self.CROUCHING_ABILITY: 
                 self.FALL = False
                 self.Y = block.Y - self.HEIGHT
                 break
@@ -45,7 +46,7 @@ class Person(Sprite):
     def check_move_right(self): 
         for block in list_block: 
             
-            if self.X + self.WIDTH > block.X - self.SPEED - 1 and self.X < block.X + block.WIDTH and self.Y + self.HEIGHT > block.Y and self.Y < block.Y + block.HEIGHT: 
+            if self.X + self.WIDTH > block.X - self.SPEED - 1 and self.X < block.X + block.WIDTH and self.Y + self.HEIGHT > block.Y and self.Y < block.Y + block.HEIGHT - self.CROUCHING_ABILITY: 
                 self.CAN_MOVE_R = False 
                 
                 break 
@@ -53,7 +54,7 @@ class Person(Sprite):
                 self.CAN_MOVE_R = True 
     def check_move_left(self):
         for block in list_block:
-            if self.Y + self.HEIGHT > block.Y and self.Y < block.Y + block.HEIGHT and self.X < block.X + block.WIDTH + self.SPEED + 2 and self.X + self.WIDTH > block.X:
+            if self.Y + self.HEIGHT > block.Y and self.Y < block.Y + block.HEIGHT - self.CROUCHING_ABILITY and self.X < block.X + block.WIDTH + self.SPEED + 2 and self.X + self.WIDTH > block.X:
                 self.CAN_MOVE_L = False
                 break
             else:

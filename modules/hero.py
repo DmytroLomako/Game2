@@ -2,8 +2,8 @@ from pygame import *
 from .settings import Person
 
 class Hero(Person):
-    def __init__(self, width, height, x, y, image_name, gravity, speed, jump_height):
-        super().__init__(width, height, x, y, image_name, speed, gravity)
+    def __init__(self, width, height, x, y, image_name, gravity, speed, jump_height, crouching_ability = 0):
+        super().__init__(width, height, x, y, image_name, speed, gravity, crouching_ability)
         self.COUNT_ANIMATION = 0
         self.DIRECTION = 'r'
         self.JUMP_HEIGHT = jump_height
@@ -11,10 +11,12 @@ class Hero(Person):
         self.COUNT_CROUCH = 0
         self.HEARTS = 1
         self.IDLE_ANIMATION = 0
+        self.CROUCHING_ABILITY = 0
     def move(self):
         keys = key.get_pressed()
         self.check_move_left()
         self.check_move_right()
+        self.CROUCHING_ABILITY = 0
         if keys[K_LEFT] and self.CAN_MOVE_L:
             self.X -= self.SPEED
             self.DIRECTION = 'l'
@@ -24,6 +26,7 @@ class Hero(Person):
                 self.IMAGE_NAME = 'player/gravity/0.png'
             elif keys[K_c]:
                 self.COUNT_CROUCH += 1
+                self.CROUCHING_ABILITY = 25
                 self.crouch()
             else:
                 self.COUNT_ANIMATION += 1
@@ -38,6 +41,7 @@ class Hero(Person):
                 self.IMAGE_NAME = 'player/gravity/0.png'
             elif keys[K_c]:
                 self.COUNT_CROUCH += 1
+                self.CROUCHING_ABILITY = 25
                 self.crouch()
             else:
                 self.COUNT_ANIMATION += 1
@@ -51,6 +55,7 @@ class Hero(Person):
                     self.IMAGE_NAME = 'player/gravity/0.png'
                 elif keys[K_c]:
                     self.COUNT_CROUCH += 1
+                    self.CROUCHING_ABILITY = 25
                     self.crouch()
                 else:
                     self.IDLE_ANIMATION += 1
@@ -63,6 +68,7 @@ class Hero(Person):
                     self.IMAGE_NAME = 'player/gravity/0.png'
                 elif keys[K_c]:
                     self.COUNT_CROUCH += 1
+                    self.CROUCHING_ABILITY = 25
                     self.crouch()
                 else:
                     self.IDLE_ANIMATION += 1

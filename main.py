@@ -32,6 +32,6 @@ while start:
     if hero.HEARTS > 0:
         hero.show_sprite()
         hero.move()
-        hero.hero_fell()
         hero.jump()
+    hero.hero_fell()
     pygame.display.flip()
