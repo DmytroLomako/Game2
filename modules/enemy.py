@@ -8,6 +8,7 @@ class Enemy(Person):
         self.JUMP_COUNT = 0
         self.HEARTS = 1
         self.JUMP_HEIGHT = jump_height
+        self.DEATH_ANIMATION = 0
     def move_enemy(self):
         self.hero_fell()
         self.check_move_right()
@@ -42,3 +43,13 @@ class Enemy(Person):
             self.IMAGE_NAME = f'enemy/jump/0.png'
             self.Y -= self.JUMP_HEIGHT
             self.JUMP_COUNT -= 1 
+    def enemy_death(self):
+        animation = self.DEATH_ANIMATION // 6
+        if animation < 6:
+            self.show_sprite()
+            self.DEATH_ANIMATION += 1
+            self.IMAGE_NAME = f'enemy-death/{animation}.png'
+            if self.DIRECTION == 'r':
+                self.load_image(True)
+            elif self.DIRECTION == 'l':
+                self.load_image()

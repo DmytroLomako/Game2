@@ -10,6 +10,7 @@ class Hero(Person):
         self.JUMP_COUNT = 0
         self.COUNT_CROUCH = 0
         self.HEARTS = 1
+        self.IDLE_ANIMATION = 0
     def move(self):
         keys = key.get_pressed()
         self.check_move_left()
@@ -49,9 +50,11 @@ class Hero(Person):
                 elif self.FALL:
                     self.IMAGE_NAME = 'player/gravity/0.png'
                 elif keys[K_c]:
-                    self.IMAGE_NAME = 'player/crouch/player-crouch-1.png'
+                    self.COUNT_CROUCH += 1
+                    self.crouch()
                 else:
-                    self.IMAGE_NAME = 'player/idle/0.png'
+                    self.IDLE_ANIMATION += 1
+                    self.animation_idle()
                 self.load_image()
             elif self.DIRECTION == 'l':
                 if self.JUMP_COUNT > 0:
@@ -59,9 +62,11 @@ class Hero(Person):
                 elif self.FALL:
                     self.IMAGE_NAME = 'player/gravity/0.png'
                 elif keys[K_c]:
-                    self.IMAGE_NAME = 'player/crouch/player-crouch-1.png'
+                    self.COUNT_CROUCH += 1
+                    self.crouch()
                 else:
-                    self.IMAGE_NAME = 'player/idle/0.png'
+                    self.IDLE_ANIMATION += 1
+                    self.animation_idle()
                 self.load_image(True)
     def animation(self):
         animation = self.COUNT_ANIMATION // 3
@@ -70,7 +75,7 @@ class Hero(Person):
             self.COUNT_ANIMATION = 0
         self.IMAGE_NAME = f'player/run/{animation}.png'
     def crouch(self):
-        animation = self.COUNT_CROUCH // 10
+        animation = self.COUNT_CROUCH // 8
         if animation == 2:
             animation = 0
             self.COUNT_CROUCH = 0
@@ -84,3 +89,9 @@ class Hero(Person):
         if self.JUMP_COUNT > 0: 
             self.Y -= self.JUMP_HEIGHT
             self.JUMP_COUNT -= 1 
+    def animation_idle(self):
+        animation = self.IDLE_ANIMATION // 8
+        if animation == 4:
+            animation = 0
+            self.IDLE_ANIMATION = 0
+        self.IMAGE_NAME = f'player/idle/{animation}.png'

@@ -36,7 +36,7 @@ class Person(Sprite):
                 self.Y += self.GRAVITY
     def check_fall(self):
         for block in list_block:
-            if self.Y + self.HEIGHT > block.Y - 4 and self.X < block.X + block.WIDTH and self.X + self.WIDTH > block.X and self.Y < block.Y + block.HEIGHT: 
+            if self.Y + self.HEIGHT > block.Y - 2 and self.X < block.X + block.WIDTH and self.X + self.WIDTH > block.X and self.Y < block.Y + block.HEIGHT: 
                 self.FALL = False
                 self.Y = block.Y - self.HEIGHT
                 break

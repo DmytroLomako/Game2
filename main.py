@@ -1,13 +1,9 @@
-import pygame
-from modules.settings import screen, background
-from modules.create_map import list_block, list_food
-from modules.hero import Hero
-from modules.enemy import Enemy
+from modules import *
 
 pygame.init()
 pygame.display.set_caption("Game")
 hero = Hero(50, 50, 100, 250, 'player/idle/0.png', 4, 3, 5)
-enemy = Enemy(40, 40, 540, 360, 'enemy/idle/0.png', 2, 3, 'r', 4)
+enemy = Enemy(40, 40, 540, 360, 'enemy/idle/0.png', 1, 1.5, 'r', 2)
 font = pygame.font.Font(None, 36)
 counter = 0
 clock = pygame.time.Clock()
@@ -27,11 +23,12 @@ while start:
             text_food = font.render(f"{0 + counter}", True, (0, 0, 0))
         if counter > 0:
             screen.blit(text_food, (740, 19))
-    
     if enemy.HEARTS > 0:
         enemy.show_sprite()
         enemy.move_enemy()
         enemy.hero_colision(hero)
+    else:
+        enemy.enemy_death()
     if hero.HEARTS > 0:
         hero.show_sprite()
         hero.move()
