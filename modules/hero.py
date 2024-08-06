@@ -16,63 +16,83 @@ class Hero(Person):
         keys = key.get_pressed()
         self.check_move_left()
         self.check_move_right()
-        self.CROUCHING_ABILITY = 0
+        
         if keys[K_LEFT] and self.CAN_MOVE_L:
             self.X -= self.SPEED
             self.DIRECTION = 'l'
-            if self.JUMP_COUNT > 0:
-                self.IMAGE_NAME = 'player/jump/0.png'
-            elif self.FALL:
-                self.IMAGE_NAME = 'player/gravity/0.png'
-            elif keys[K_c]:
+            if self.CROUCHING_ABILITY == 25 and self.C:
                 self.COUNT_CROUCH += 1
-                self.CROUCHING_ABILITY = 25
                 self.crouch()
             else:
-                self.COUNT_ANIMATION += 1
-                self.animation()
+                self.CROUCHING_ABILITY = 0
+                if self.JUMP_COUNT > 0:
+                    self.IMAGE_NAME = 'player/jump/0.png'
+                elif self.FALL:
+                    self.IMAGE_NAME = 'player/gravity/0.png'
+                elif keys[K_c]:
+                    self.COUNT_CROUCH += 1
+                    self.CROUCHING_ABILITY = 25
+                    self.crouch()
+                else:
+                    self.COUNT_ANIMATION += 1
+                    self.animation()
             self.load_image(True)
         elif keys[K_RIGHT] and self.CAN_MOVE_R:
             self.X += self.SPEED
             self.DIRECTION = 'r'
-            if self.JUMP_COUNT > 0:
-                self.IMAGE_NAME = 'player/jump/0.png'
-            elif self.FALL:
-                self.IMAGE_NAME = 'player/gravity/0.png'
-            elif keys[K_c]:
+            if self.CROUCHING_ABILITY == 25 and self.C:
                 self.COUNT_CROUCH += 1
-                self.CROUCHING_ABILITY = 25
                 self.crouch()
             else:
-                self.COUNT_ANIMATION += 1
-                self.animation()
+                self.CROUCHING_ABILITY = 0
+                if self.JUMP_COUNT > 0:
+                    self.IMAGE_NAME = 'player/jump/0.png'
+                elif self.FALL:
+                    self.IMAGE_NAME = 'player/gravity/0.png'
+                elif keys[K_c]:
+                    self.COUNT_CROUCH += 1
+                    self.CROUCHING_ABILITY = 25
+                    self.crouch()
+                else:
+                    self.COUNT_ANIMATION += 1
+                    self.animation()
             self.load_image()
         else:
             if self.DIRECTION == 'r':
-                if self.JUMP_COUNT > 0:
-                    self.IMAGE_NAME = 'player/jump/0.png'
-                elif self.FALL:
-                    self.IMAGE_NAME = 'player/gravity/0.png'
-                elif keys[K_c]:
+                if self.CROUCHING_ABILITY == 25 and self.C:
                     self.COUNT_CROUCH += 1
-                    self.CROUCHING_ABILITY = 25
                     self.crouch()
                 else:
-                    self.IDLE_ANIMATION += 1
-                    self.animation_idle()
+                    self.CROUCHING_ABILITY = 0
+                    if self.JUMP_COUNT > 0:
+                        self.IMAGE_NAME = 'player/jump/0.png'
+                    elif self.FALL:
+                        self.IMAGE_NAME = 'player/gravity/0.png'
+                    elif keys[K_c]:
+                        self.COUNT_CROUCH += 1
+                        self.CROUCHING_ABILITY = 25
+                        self.crouch()
+                    else:
+                        self.IDLE_ANIMATION += 1
+                        self.animation_idle()
                 self.load_image()
             elif self.DIRECTION == 'l':
-                if self.JUMP_COUNT > 0:
-                    self.IMAGE_NAME = 'player/jump/0.png'
-                elif self.FALL:
-                    self.IMAGE_NAME = 'player/gravity/0.png'
-                elif keys[K_c]:
+                if self.CROUCHING_ABILITY == 25 and self.C:
                     self.COUNT_CROUCH += 1
-                    self.CROUCHING_ABILITY = 25
                     self.crouch()
                 else:
-                    self.IDLE_ANIMATION += 1
-                    self.animation_idle()
+                    self.CROUCHING_ABILITY = 0
+                    if self.JUMP_COUNT > 0:
+                        self.IMAGE_NAME = 'player/jump/0.png'
+                    elif self.FALL:
+                        self.IMAGE_NAME = 'player/gravity/0.png'
+                    elif keys[K_c]:
+                        self.COUNT_CROUCH += 1
+                        self.CROUCHING_ABILITY = 25
+                        self.crouch()
+                    else:
+                        self.IDLE_ANIMATION += 1
+                        self.animation_idle()
                 self.load_image(True)
     def animation(self):
         animation = self.COUNT_ANIMATION // 3

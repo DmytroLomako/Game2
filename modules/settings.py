@@ -11,6 +11,7 @@ class Sprite:
         self.Y = y
         self.IMAGE_NAME = image_name
         self.IMAGE = None
+        self.C = False
         self.load_image()
     def load_image(self, flip_x = False):
         path_folder = os.path.abspath(__file__ + '/../../images')
@@ -61,10 +62,13 @@ class Person(Sprite):
                 self.CAN_MOVE_L = True
     def check_jump(self):
         for block in list_block:
-            if self.X < block.X + block.WIDTH and self.X + self.WIDTH > block.X and self.Y < block.Y + block.HEIGHT + 3 and self.Y > block.Y:
+            if self.X < block.X + block.WIDTH and self.X + self.WIDTH > block.X and self.Y < block.Y + block.HEIGHT + 3 and self.Y + self.HEIGHT > block.Y:
                 self.JUMP_COUNT = 0
                 self.FALL = True
+                self.C = True
                 break
+            else:
+                self.C = False
         
 background = Sprite(800, 400, 0, 0, 'screen/1.jpeg')
         
