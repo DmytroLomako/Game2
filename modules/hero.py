@@ -16,7 +16,6 @@ class Hero(Person):
         keys = key.get_pressed()
         self.check_move_left()
         self.check_move_right()
-        
         if keys[K_LEFT] and self.CAN_MOVE_L:
             self.X -= self.SPEED
             self.DIRECTION = 'l'

@@ -9,6 +9,7 @@ class Enemy(Person):
         self.HEARTS = 1
         self.JUMP_HEIGHT = jump_height
         self.DEATH_ANIMATION = 0
+        self.COUNT_IDLE_ANIMATION = 0
     def move_enemy(self):
         self.hero_fell()
         self.check_move_right()
@@ -25,6 +26,25 @@ class Enemy(Person):
             self.load_image()
             if self.CAN_MOVE_L == False:
                 self.DIRECTION = 'r'
+    def check_move(self, hero):
+        if self.X - 200 < hero.X and self.Y + self.HEIGHT >= hero.Y + self.HEIGHT - 100 and self.Y + self.HEIGHT <= hero.Y + hero.HEIGHT + 100:
+            self.move_enemy()
+        else:
+            if self.FALL == True or self.JUMP_COUNT > 0:
+                self.JUMP_COUNT = 0
+                self.IMAGE_NAME = f'enemy/gravity/0.png'
+                self.hero_fell()
+                if self.DIRECTION == 'r':
+                    self.load_image(True)
+                elif self.DIRECTION == 'l':
+                    self.load_image()
+            else:
+                self.COUNT_IDLE_ANIMATION += 1
+                self.enemy_idle_animation()
+                if self.DIRECTION == 'r':
+                    self.load_image(True)
+                elif self.DIRECTION == 'l':
+                    self.load_image()
     def hero_colision(self, hero):
         rect_hero = Rect(hero.X, hero.Y, hero.WIDTH, hero.HEIGHT)
         rect_enemy = Rect(self.X, self.Y, self.WIDTH, self.HEIGHT)
@@ -53,3 +73,9 @@ class Enemy(Person):
                 self.load_image(True)
             elif self.DIRECTION == 'l':
                 self.load_image()
+    def enemy_idle_animation(self):
+        animation = self.COUNT_IDLE_ANIMATION // 14
+        if animation == 4:
+            animation = 0
+            self.COUNT_IDLE_ANIMATION = 0
+        self.IMAGE_NAME = f'enemy/idle/{animation}.png'
