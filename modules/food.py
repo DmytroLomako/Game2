@@ -10,7 +10,9 @@ class FOOD(Sprite):
         hero_rect = pygame.Rect(hero.X, hero.Y, hero.WIDTH, hero.HEIGHT)
         if food_rect.colliderect(hero_rect):
             self.COUNT_FOOD += 1
-            self.X = 760
-            self.Y = 15
+            self.X = -1000
+            self.Y = -1000
             return True
+        else:
+            self.show_sprite()
         

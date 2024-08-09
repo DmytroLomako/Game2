@@ -27,6 +27,8 @@ for i in game_matrix:
         elif j == 'a':
             food = FOOD(30, 30, x + 2, y - 2, 'food/0.png')
             list_food.append(food)
+        elif j == 's':
+            start_x = Sprite(25, 25, x, y, 'food/0.png')
         x += 25
     y += 25
     x = 0
