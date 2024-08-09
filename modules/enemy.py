@@ -10,26 +10,37 @@ class Enemy(Person):
         self.JUMP_HEIGHT = jump_height
         self.DEATH_ANIMATION = 0
         self.COUNT_IDLE_ANIMATION = 0
+        self.stop_jump = 0
     def move_enemy(self):
         self.hero_fell()
         self.check_move_right()
         self.check_move_left()
-        if self.DIRECTION == 'r':
-            self.X += self.SPEED
-            self.jump()
-            self.load_image(True)
-            if self.CAN_MOVE_R == False:
-                self.DIRECTION = 'l'
-        elif self.DIRECTION == 'l':
-            self.X -= self.SPEED
-            self.jump()
-            self.load_image()
-            if self.CAN_MOVE_L == False:
-                self.DIRECTION = 'r'
-    def check_move(self, hero):
-        if self.X - 200 < hero.X and self.Y + self.HEIGHT >= hero.Y + self.HEIGHT - 100 and self.Y + self.HEIGHT <= hero.Y + hero.HEIGHT + 100:
-            self.move_enemy()
+        if self.stop_jump <= 0:
+            if self.DIRECTION == 'r':
+                self.X += self.SPEED
+                self.jump()
+                self.load_image(True)
+                if self.CAN_MOVE_R == False:
+                    self.DIRECTION = 'l'
+            elif self.DIRECTION == 'l':
+                self.X -= self.SPEED
+                self.jump()
+                self.load_image()
+                if self.CAN_MOVE_L == False:
+                    self.DIRECTION = 'r'
         else:
+            self.stop_jump -= 1
+            self.IMAGE_NAME = 'enemy/idle/0.png'
+            if self.DIRECTION == 'r':
+                self.load_image(True)
+            elif self.DIRECTION == 'l':
+                self.load_image()
+    def check_move(self, hero):
+        if self.X - 200 < hero.X and self.Y + self.HEIGHT >= hero.Y + self.HEIGHT - 100 and self.Y + self.HEIGHT <= hero.Y + hero.HEIGHT + 100 and self.X + 200 > hero.X:
+            self.move_enemy()
+            self.stop_jump_func()
+        else:
+            self.stop_jump -= 1
             if self.FALL == True or self.JUMP_COUNT > 0:
                 self.JUMP_COUNT = 0
                 self.IMAGE_NAME = f'enemy/gravity/0.png'
@@ -45,6 +56,9 @@ class Enemy(Person):
                     self.load_image(True)
                 elif self.DIRECTION == 'l':
                     self.load_image()
+    def stop_jump_func(self):
+        if not self.FALL:
+            self.stop_jump = 30
     def hero_colision(self, hero):
         rect_hero = Rect(hero.X, hero.Y, hero.WIDTH, hero.HEIGHT)
         rect_enemy = Rect(self.X, self.Y, self.WIDTH, self.HEIGHT)
