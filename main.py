@@ -12,15 +12,18 @@ enemy = Enemy(40, 40, 540, 360, 'enemy/idle/0.png', 1, 1.5, 'r', 2)
 not_food = Sprite(40, 40, 760, 10, 'food/0.png')
 font = pygame.font.Font(None, 43)
 font_small = pygame.font.Font(None, 25)
-text_auth = font.render('Авторизація', True, (255, 255, 255))
-text_login = font_small.render('Введіть логін:', True, (255, 255, 255))
+text_auth = font.render('Welcome back', True, (255, 255, 255))
+text_login = font_small.render('Username', True, (255, 255, 255))
 input_login = pygame.Rect(310, 140, 180, 30)
-text_password = font_small.render('Введіть пароль:', True, (255, 255, 255))
+text_password = font_small.render('Password', True, (255, 255, 255))
 input_password = pygame.Rect(310, 260, 180, 30)
-button_login = pygame.Rect(320, 340, 160, 30)
-text_login_button = font_small.render('Увійти', True, (150, 150, 150))
-text_register = font_small.render('Реєстрація', True, (179, 214, 252))
-rect_register = pygame.Rect(360, 390, 92, 20)
+button_login = pygame.Rect(350, 330, 100, 30)
+text_login_button = font_small.render('Sign in', True, (255, 255, 255))
+text_register0 = font_small.render("Don't have an account?", True, (255, 255, 255))
+text_register = font_small.render("Sign up.", True, (179, 214, 252))
+rect_register = pygame.Rect(462, 388, 68, 24)
+rect_show_password = pygame.Rect(455, 235, 32, 18)
+show_password_icon = Sprite(52, 37, 445, 225, 'login/show_password1.png')
 counter = 0
 clock = pygame.time.Clock()
 start = True
@@ -29,6 +32,7 @@ active_field = None
 blue_color = (127, 184, 245)
 text_input_password = ''
 text_input_login = ''
+show_password = False
 while start:
     clock.tick(60)
     for event in pygame.event.get():
@@ -59,16 +63,21 @@ while start:
                 if rect_register.collidepoint(event.pos):
                     if scene == 'login':
                         scene = 'register'
-                        text_auth = font.render('Реєстрація', True, (255, 255, 255))
-                        text_register = font_small.render('Авторизація', True, (179, 214, 252))
-                        text_login_button = font_small.render('Зареєструватись', True, (150, 150, 150))
-                    elif scene =='register':
+                        text_auth = font.render('Create an account', True, (255, 255, 255))
+                        text_register0 = font_small.render("Already have an account?", True, (255, 255, 255))
+                        text_register = font_small.render('Sign in.', True, (179, 214, 252))
+                        text_login_button = font_small.render('Sign up', True, (255, 255, 255))
+                    elif scene == 'register':
                         scene = 'login'
-                        text_auth = font.render('Авторизація', True, (255, 255, 255))
-                        text_register = font_small.render('Реєстрація', True, (179, 214, 252))
-                        text_login_button = font_small.render('Увійти', True, (150, 150, 150))
+                        text_auth = font.render('Welcome back', True, (255, 255, 255))
+                        text_register0 = font_small.render("Don't have an account?", True, (255, 255, 255))
+                        text_login_button = font_small.render('Sign in', True, (255, 255, 255))
+                        text_register = font_small.render("Sign up.", True, (179, 214, 252))
                     text_input_login = ''
                     text_input_password = ''
+                    show_password = False
+                if rect_show_password.collidepoint(event.pos):
+                    show_password = not show_password
             if event.type == pygame.KEYDOWN:
                 if active_field == 'input_login':
                     if event.key == pygame.K_BACKSPACE:
@@ -114,7 +123,8 @@ while start:
         hero.hero_fell()
     elif scene == 'login' or scene == 'register':
         screen.fill((0, 0, 0))
-        screen.blit(text_auth, (310, 20))
+        background_login.show_sprite()
+        background_login2.show_sprite()
         screen.blit(text_login, (310, 100))
         if active_field == 'input_login':
             pygame.draw.rect(screen, blue_color, input_login, 2)
@@ -126,17 +136,34 @@ while start:
         screen.blit(text_password, (310, 220))
         if active_field == 'input_password':
             pygame.draw.rect(screen, blue_color, input_password, 2)
-            text_input_password_object = font.render('*' * len(text_input_password), True, blue_color)
+            if show_password:
+                text_input_password_object = font_small.render(text_input_password, True, blue_color)
+            elif not show_password:
+                text_input_password_object = font.render('*' * len(text_input_password), True, blue_color)
         else:
             pygame.draw.rect(screen, (255, 255, 255), input_password, 2)
-            text_input_password_object = font.render('*' * len(text_input_password), True, (255, 255, 255))
+            if show_password:
+                text_input_password_object = font_small.render(text_input_password, True, (255, 255, 255))
+                show_password_icon = Sprite(52, 37, 445, 225, 'login/show_password2.png')
+            elif not show_password:
+                text_input_password_object = font.render('*' * len(text_input_password), True, (255, 255, 255))
+                show_password_icon = Sprite(52, 37, 445, 225, 'login/show_password1.png')
         screen.blit(text_input_password_object, (315, 265))
-        pygame.draw.rect(screen, (150, 150, 150), button_login, 3)
+        pygame.draw.rect(screen, (0, 120, 0), button_login)
         if scene == 'login':
-            screen.blit(text_login_button, (373, 346))
-        else:
-            screen.blit(text_login_button, (330, 346))
-        screen.blit(text_register, (355, 390))
+            screen.blit(text_auth, (299, 38))
+            screen.blit(text_register0, (270, 390))
+            screen.blit(text_register, (464, 390))
+            rect_register = pygame.Rect(462, 388, 68, 24)
+            screen.blit(text_login_button, (373, 336))
+        elif scene =='register':
+            screen.blit(text_auth, (273, 38))
+            screen.blit(text_register0, (263, 390))
+            screen.blit(text_register, (478, 390))
+            rect_register = pygame.Rect(475, 388, 68, 24)
+            screen.blit(text_login_button, (370, 336))
+        # pygame.draw.rect(screen, (255, 255, 255), rect_show_password, 2)
+        show_password_icon.show_sprite()
     pygame.display.flip()
 connection.commit()
 connection.close()
