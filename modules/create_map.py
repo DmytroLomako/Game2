@@ -1,4 +1,4 @@
-from .map import game_matrix, list_block, list_food
+from .map import game_matrix, list_block, list_food, list_food_y
 from .settings import Sprite
 from .food import FOOD
 
@@ -27,6 +27,7 @@ for i in game_matrix:
         elif j == 'a':
             food = FOOD(30, 30, x + 2, y - 2, 'food/0.png')
             list_food.append(food)
+            list_food_y.append(food.Y)
         elif j == 's':
             start_x = Sprite(25, 25, x, y, 'food/0.png')
         x += 25

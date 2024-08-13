@@ -1,5 +1,6 @@
 from modules import *
 import sqlite3
+import json
 
 connection = sqlite3.connect('Data.db')
 cursor = connection.cursor()
@@ -7,8 +8,14 @@ cursor.execute('CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY, userna
 connection.commit()
 pygame.init()
 pygame.display.set_caption("Game")
-hero = Hero(50, 50, 100, 250, 'player/idle/0.png', 4, 3, 5)
-enemy = Enemy(40, 40, 540, 360, 'enemy/idle/0.png', 1, 1.5, 'r', 2)
+
+with open('data.json', 'r') as f:
+    data = json.load(f)
+hero = Hero(50, 50, data['hero_x'], data['hero_y'], 'player/idle/0.png', 4, 3, 5)
+for object in data['enemies']:
+    enemy = Enemy(40, 40, object['enemy_x'], object['enemy_y'], 'enemy/idle/0.png',1, 1.5, object['direction'], 2)
+    enemy_list.append(enemy)
+
 not_food = Sprite(40, 40, 760, 10, 'food/0.png')
 font = pygame.font.Font(None, 43)
 font_small = pygame.font.Font(None, 25)
@@ -24,7 +31,15 @@ text_register = font_small.render("Sign up.", True, (179, 214, 252))
 rect_register = pygame.Rect(462, 388, 68, 24)
 rect_show_password = pygame.Rect(455, 235, 32, 18)
 show_password_icon = Sprite(52, 37, 445, 225, 'login/show_password1.png')
-counter = 0
+font2 = pygame.font.Font(None, 50)
+font1 = pygame.font.Font(None, 25)
+play_button = pygame.Rect(200, 40, 200, 80)
+play_text = font2.render('PLAY', True, 'black')
+exit_button = pygame.Rect(200, 280, 200, 80)
+exit_text = font2.render('EXIT', True, 'black')
+continue_button = pygame.Rect(200, 160, 200, 80)
+continue_text = font2.render('CONTINUE', True, 'black')
+counter = data['counter']
 clock = pygame.time.Clock()
 start = True
 scene = 'login'
@@ -33,10 +48,43 @@ blue_color = (127, 184, 245)
 text_input_password = ''
 text_input_login = ''
 show_password = False
+count_continue = 0
+count_enemy_death_animation = 0
+start_x.X = data['start_x']
+for i in range(len(enemy_list)):
+    enemy_list[i].HEARTS = data['enemies'][i]['enemy_hearts']
+for i in range(len(list_food)):
+    list_food[i].Y = data['food'][i]['food_y']
 while start:
     clock.tick(60)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            new_data = {
+                "block1_x" : list_block[0].X,
+                "start_x" : start_x.X,
+                "start_x_blocks" : start_x.X / 8,
+                "hero_x" : hero.X,
+                "hero_y" : hero.Y,
+                "level" : 1,
+                "counter" : counter,
+                'enemies' : [],
+                "food": []
+            }
+            for enemy in enemy_list:
+                enemy_dict = {
+                    'enemy_x' : enemy.X,
+                    'enemy_y' : enemy.Y,
+                    "enemy_hearts" : enemy.HEARTS,
+                    'direction' : enemy.DIRECTION
+                }
+                new_data['enemies'].append(enemy_dict)
+            for food in list_food:
+                food_dict = {
+                    'food_y' : food.Y
+                }
+                new_data['food'].append(food_dict)
+            with open('data.json', 'w') as file:
+                json.dump(new_data, file, indent = 4)
             start = False
         if scene == 'login' or scene =='register':
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -54,12 +102,12 @@ while start:
                             text_input_login = ''
                             text_input_password = ''
                         else:
-                            scene = 'game'
+                            scene = 'menu'
                     elif scene == 'register':
                         if text_input_login != '' and text_input_password != '':
                             cursor.execute('INSERT INTO Users (username, password) VALUES (?, ?)', (text_input_login, text_input_password))
                             connection.commit()
-                            scene = 'game'
+                            scene = 'menu'
                 if rect_register.collidepoint(event.pos):
                     if scene == 'login':
                         scene = 'register'
@@ -97,23 +145,40 @@ while start:
                     else:
                         if len(text_input_password) < 13:
                             text_input_password += event.unicode
+        if scene == 'menu':
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if continue_button.collidepoint(pygame.mouse.get_pos()):
+                    count_continue += 1
+                    count_enemy_death_animation += 1
+                    for i in list_block:
+                        i.X += data['start_x']
+                    for i in list_food:
+                        i.X += data['start_x']
+                    for object in data['enemies']:     
+                        enemy.X = object['enemy_x']
+                    scene = 'game'
     if scene == 'game':
         background.show_sprite()
+        for enemy in enemy_list:
+            if enemy.HEARTS > 0:
+                enemy.show_sprite()
+                enemy.check_move(hero)
+                enemy.hero_colision(hero)
+            else:
+                if count_enemy_death_animation == 0:
+                    enemy.enemy_death()
         for i in list_block:
             i.show_sprite()
         for i in list_food:
             if i.collision_food(hero):
                 counter += 1
                 text_food = font.render(f"{0 + counter}", True, (0, 0, 0))
+            if count_continue > 0:
+                count_continue = 0
+                text_food = font.render(f"{0 + counter}", True, (0, 0, 0))
             if counter > 0:
                 not_food.show_sprite()
                 screen.blit(text_food, (737, 19))
-        if enemy.HEARTS > 0:
-            enemy.show_sprite()
-            enemy.check_move(hero)
-            enemy.hero_colision(hero)
-        else:
-            enemy.enemy_death()
         if hero.HEARTS > 0:
             hero.show_sprite()
             hero.move(list_block, list_food, enemy, start_x)
@@ -162,8 +227,31 @@ while start:
             screen.blit(text_register, (478, 390))
             rect_register = pygame.Rect(475, 388, 68, 24)
             screen.blit(text_login_button, (370, 336))
-        # pygame.draw.rect(screen, (255, 255, 255), rect_show_password, 2)
         show_password_icon.show_sprite()
+    elif scene == 'menu':
+        screen.fill((0, 0, 0))
+        pygame.draw.rect(screen, (100, 200, 100), play_button)
+        screen.blit(play_text, (256, 63))
+        if play_button.collidepoint(pygame.mouse.get_pos()):
+            start_x.X = 0
+            counter = 0
+            count_continue = 0
+            for i in range(len(list_food)):
+                list_food[i].Y = list_food_y[i]
+            for i in range(len(enemy_list)):
+                enemy_list[i].HEARTS = 1
+            scene = 'game'
+            hero.X = 100
+            hero.Y = 250
+            enemy.X = 540
+            enemy.Y = 360
+            enemy.DIRECTION = 'r'
+        pygame.draw.rect(screen, (200, 100, 100), exit_button)
+        screen.blit(exit_text, (256, 303))
+        if exit_button.collidepoint(pygame.mouse.get_pos()):
+            start = False
+        pygame.draw.rect(screen, (100, 200, 100), continue_button)
+        screen.blit(continue_text, (205, 183))
     pygame.display.flip()
 connection.commit()
 connection.close()
