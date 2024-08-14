@@ -12,9 +12,6 @@ pygame.display.set_caption("Game")
 with open('data.json', 'r') as f:
     data = json.load(f)
 hero = Hero(50, 50, data['hero_x'], data['hero_y'], 'player/idle/0.png', 4, 3, 5)
-for object in data['enemies']:
-    enemy = Enemy(40, 40, object['enemy_x'], object['enemy_y'], 'enemy/idle/0.png',1, 1.5, object['direction'], 2)
-    enemy_list.append(enemy)
 
 not_food = Sprite(40, 40, 760, 10, 'food/0.png')
 font = pygame.font.Font(None, 43)
@@ -42,7 +39,8 @@ continue_text = font2.render('CONTINUE', True, 'black')
 counter = data['counter']
 clock = pygame.time.Clock()
 start = True
-scene = 'login'
+scene = 'menu'
+# scene = 'login'
 active_field = None
 blue_color = (127, 184, 245)
 text_input_password = ''
@@ -51,8 +49,13 @@ show_password = False
 count_continue = 0
 count_enemy_death_animation = 0
 start_x.X = data['start_x']
-for i in range(len(enemy_list)):
-    enemy_list[i].HEARTS = data['enemies'][i]['enemy_hearts']
+try:
+    for i in range(len(enemy_list)):
+        enemy_list[i].X = data['enemies'][i]['enemy_x']
+        enemy_list[i].HEARTS = data['enemies'][i]['enemy_hearts']
+        enemy_list[i].DIRECTION = data['enemies'][i]['direction']
+except IndexError:
+    pass
 for i in range(len(list_food)):
     list_food[i].Y = data['food'][i]['food_y']
 while start:
@@ -60,9 +63,7 @@ while start:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             new_data = {
-                "block1_x" : list_block[0].X,
                 "start_x" : start_x.X,
-                "start_x_blocks" : start_x.X / 8,
                 "hero_x" : hero.X,
                 "hero_y" : hero.Y,
                 "level" : 1,
@@ -73,7 +74,7 @@ while start:
             for enemy in enemy_list:
                 enemy_dict = {
                     'enemy_x' : enemy.X,
-                    'enemy_y' : enemy.Y,
+            #         'enemy_y' : enemy.Y,
                     "enemy_hearts" : enemy.HEARTS,
                     'direction' : enemy.DIRECTION
                 }
@@ -154,8 +155,8 @@ while start:
                         i.X += data['start_x']
                     for i in list_food:
                         i.X += data['start_x']
-                    for object in data['enemies']:     
-                        enemy.X = object['enemy_x']
+                    for i in range(len(enemy_list)):     
+                        enemy_list[i].X = data['enemies'][i]['enemy_x']
                     scene = 'game'
     if scene == 'game':
         background.show_sprite()
@@ -181,7 +182,7 @@ while start:
                 screen.blit(text_food, (737, 19))
         if hero.HEARTS > 0:
             hero.show_sprite()
-            hero.move(list_block, list_food, enemy, start_x)
+            hero.move(list_block, list_food, enemy_list, start_x)
             hero.jump()
         else:
             scene = 'menu'
@@ -239,7 +240,9 @@ while start:
             for i in range(len(list_food)):
                 list_food[i].Y = list_food_y[i]
             for i in range(len(enemy_list)):
+                enemy_list[i].X = enemy_list_x[i]
                 enemy_list[i].HEARTS = 1
+                enemy_list[i].DIRECTION = enemy_list_direction[i]
             scene = 'game'
             hero.X = 100
             hero.Y = 250

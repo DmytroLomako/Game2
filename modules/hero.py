@@ -12,7 +12,7 @@ class Hero(Person):
         self.HEARTS = 1
         self.IDLE_ANIMATION = 0
         self.CROUCHING_ABILITY = 0
-    def move(self, list_block, list_food, enemy, start_x):
+    def move(self, list_block, list_food, enemy_list, start_x):
         keys = key.get_pressed()
         self.check_move_left()
         self.check_move_right()
@@ -30,7 +30,8 @@ class Hero(Person):
                         block.X += self.SPEED
                     for food in list_food:
                         food.X += self.SPEED
-                    enemy.X += self.SPEED
+                    for enemy in enemy_list:
+                        enemy.X += self.SPEED
                     start_x.X += self.SPEED
                 else:
                     self.X -= self.SPEED
@@ -66,7 +67,8 @@ class Hero(Person):
                         block.X -= self.SPEED
                     for food in list_food:
                         food.X -= self.SPEED
-                    enemy.X -= self.SPEED
+                    for enemy in enemy_list:
+                        enemy.X -= self.SPEED
                     start_x.X -= self.SPEED
                 else:
                     self.X += self.SPEED

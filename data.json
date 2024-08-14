@@ -1,15 +1,17 @@
 {
-    "block1_x": 150,
     "start_x": 0,
-    "start_x_blocks": 0.0,
     "hero_x": 100,
     "hero_y": 350,
     "level": 1,
     "counter": 0,
     "enemies": [
         {
+            "enemy_x": 725,
+            "enemy_hearts": 1,
+            "direction": "r"
+        },
+        {
             "enemy_x": 540,
-            "enemy_y": 360,
             "enemy_hearts": 1,
             "direction": "r"
         }
