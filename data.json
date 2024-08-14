@@ -8,12 +8,27 @@
         {
             "enemy_x": 725,
             "enemy_hearts": 1,
+            "direction": "l"
+        },
+        {
+            "enemy_x": 500,
+            "enemy_hearts": 1,
+            "direction": "l"
+        },
+        {
+            "enemy_x": 775,
+            "enemy_hearts": 1,
+            "direction": "l"
+        },
+        {
+            "enemy_x": 1225,
+            "enemy_hearts": 1,
             "direction": "r"
         },
         {
-            "enemy_x": 540,
+            "enemy_x": 1725,
             "enemy_hearts": 1,
-            "direction": "r"
+            "direction": "l"
         }
     ],
     "food": [
@@ -21,10 +36,34 @@
             "food_y": 123
         },
         {
+            "food_y": 173
+        },
+        {
+            "food_y": 173
+        },
+        {
+            "food_y": 198
+        },
+        {
             "food_y": 198
         },
         {
             "food_y": 273
+        },
+        {
+            "food_y": 273
+        },
+        {
+            "food_y": 273
+        },
+        {
+            "food_y": 273
+        },
+        {
+            "food_y": 273
+        },
+        {
+            "food_y": 323
         },
         {
             "food_y": 373

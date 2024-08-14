@@ -56,8 +56,11 @@ try:
         enemy_list[i].DIRECTION = data['enemies'][i]['direction']
 except IndexError:
     pass
-for i in range(len(list_food)):
-    list_food[i].Y = data['food'][i]['food_y']
+try:
+    for i in range(len(list_food)):
+        list_food[i].Y = data['food'][i]['food_y']
+except IndexError:
+    pass
 while start:
     clock.tick(60)
     for event in pygame.event.get():
@@ -148,18 +151,21 @@ while start:
                             text_input_password += event.unicode
         if scene == 'menu':
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if continue_button.collidepoint(pygame.mouse.get_pos()):
-                    count_continue += 1
-                    count_enemy_death_animation += 1
-                    for i in list_block:
-                        i.X += data['start_x']
-                    for i in list_food:
-                        i.X += data['start_x']
-                    for i in range(len(enemy_list)):     
-                        enemy_list[i].X = data['enemies'][i]['enemy_x']
-                    scene = 'game'
+                if hero.HEARTS > 0:
+                    if continue_button.collidepoint(pygame.mouse.get_pos()):
+                        count_continue += 1
+                        count_enemy_death_animation += 1
+                        for i in list_block:
+                            i.X += data['start_x']
+                        for i in list_food:
+                            i.X += data['start_x']
+                        for i in range(len(enemy_list)):     
+                            enemy_list[i].X = data['enemies'][i]['enemy_x']
+                        finish.X += data['start_x']
+                        scene = 'game'
     if scene == 'game':
         background.show_sprite()
+        finish.show_sprite()
         for enemy in enemy_list:
             if enemy.HEARTS > 0:
                 enemy.show_sprite()
@@ -182,7 +188,7 @@ while start:
                 screen.blit(text_food, (737, 19))
         if hero.HEARTS > 0:
             hero.show_sprite()
-            hero.move(list_block, list_food, enemy_list, start_x)
+            hero.move(list_block, list_food, enemy_list, start_x, finish)
             hero.jump()
         else:
             scene = 'menu'
@@ -237,18 +243,20 @@ while start:
             start_x.X = 0
             counter = 0
             count_continue = 0
+            for i in range(len(list_block)):
+                list_block[i].X = list_block_x[i]
             for i in range(len(list_food)):
+                list_food[i].X = list_food_x[i]
                 list_food[i].Y = list_food_y[i]
             for i in range(len(enemy_list)):
                 enemy_list[i].X = enemy_list_x[i]
                 enemy_list[i].HEARTS = 1
                 enemy_list[i].DIRECTION = enemy_list_direction[i]
-            scene = 'game'
+            finish.X = 1840
             hero.X = 100
             hero.Y = 250
-            enemy.X = 540
-            enemy.Y = 360
-            enemy.DIRECTION = 'r'
+            hero.HEARTS = 1
+            scene = 'game'
         pygame.draw.rect(screen, (200, 100, 100), exit_button)
         screen.blit(exit_text, (256, 303))
         if exit_button.collidepoint(pygame.mouse.get_pos()):

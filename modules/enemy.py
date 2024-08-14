@@ -36,7 +36,7 @@ class Enemy(Person):
             elif self.DIRECTION == 'l':
                 self.load_image()
     def check_move(self, hero):
-        if self.X - 200 < hero.X and self.Y + self.HEIGHT >= hero.Y + self.HEIGHT - 100 and self.Y + self.HEIGHT <= hero.Y + hero.HEIGHT + 100 and self.X + 200 > hero.X:
+        if self.X - 125 < hero.X and self.Y + self.HEIGHT >= hero.Y + self.HEIGHT - 120 and self.Y + self.HEIGHT <= hero.Y + hero.HEIGHT + 50 and self.X + 125 > hero.X:
             self.move_enemy()
             self.stop_jump_func()
         else:
