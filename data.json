@@ -2,6 +2,7 @@
     "start_x": 0,
     "hero_x": 100,
     "hero_y": 350,
+    "hero_hearts": 1,
     "level": 1,
     "counter": 0,
     "enemies": [

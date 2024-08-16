@@ -11,7 +11,7 @@ pygame.display.set_caption("Game")
 
 with open('data.json', 'r') as f:
     data = json.load(f)
-hero = Hero(50, 50, data['hero_x'], data['hero_y'], 'player/idle/0.png', 4, 3, 5)
+hero = Hero(50, 50, data['hero_x'], data['hero_y'], 'player/idle/0.png', 4, 23, 25)
 
 not_food = Sprite(40, 40, 760, 10, 'food/0.png')
 font = pygame.font.Font(None, 43)
@@ -36,12 +36,13 @@ exit_button = pygame.Rect(300, 320, 200, 80)
 exit_text = font2.render('EXIT', True, 'black')
 continue_button = pygame.Rect(300, 180, 200, 80)
 continue_text = font2.render('CONTINUE', True, 'black')
+finish_text = font2.render('FINISH', True, 'black')
 counter = data['counter']
 clock = pygame.time.Clock()
 start = True
-# scene = 'game2'
 scene = 'menu'
-# scene = 'login'
+# scene = 'finish'
+scene = 'login'
 active_field = None
 blue_color = (127, 184, 245)
 text_input_password = ''
@@ -51,6 +52,7 @@ count_continue = 0
 count_enemy_death_animation = 0
 start_x.X = data['start_x']
 level = data['level']
+hero.HEARTS = data['hero_hearts']
 
 def game_work():
     global count_continue, counter, text_food, scene
@@ -109,6 +111,7 @@ while start:
                 "start_x" : start_x.X,
                 "hero_x" : hero.X,
                 "hero_y" : hero.Y,
+                "hero_hearts" : hero.HEARTS,
                 "level" : level,
                 "counter" : counter,
                 'enemies' : [],
@@ -188,7 +191,7 @@ while start:
                     else:
                         if len(text_input_password) < 13:
                             text_input_password += event.unicode
-        if scene == 'menu':
+        elif scene == 'menu':
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if continue_button.collidepoint(pygame.mouse.get_pos()):
                     if hero.HEARTS > 0:
@@ -235,6 +238,19 @@ while start:
             scene = 'game2'
     elif scene == 'game2':
         game_work()
+        if hero.finish_colision(finish):
+            hero.X = 100
+            hero.Y = 400
+            start_x.X = 0
+            finish.X = 1840
+            text_all_food = font2.render(f'You collected {counter} units of food', True, (100, 80, 10))
+            scene = 'finish'
+    elif scene == 'finish':
+        background2.HEIGHT = 450
+        background2.load_image()
+        background2.show_sprite()
+        screen.blit(text_all_food, (170, 30))
+        screen.blit(finish_text, (350, 185))
     elif scene == 'login' or scene == 'register':
         screen.fill((0, 0, 0))
         background_login.show_sprite()
