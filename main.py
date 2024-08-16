@@ -30,15 +30,16 @@ rect_show_password = pygame.Rect(455, 235, 32, 18)
 show_password_icon = Sprite(52, 37, 445, 225, 'login/show_password1.png')
 font2 = pygame.font.Font(None, 50)
 font1 = pygame.font.Font(None, 25)
-play_button = pygame.Rect(200, 40, 200, 80)
+play_button = pygame.Rect(300, 40, 200, 80)
 play_text = font2.render('PLAY', True, 'black')
-exit_button = pygame.Rect(200, 280, 200, 80)
+exit_button = pygame.Rect(300, 320, 200, 80)
 exit_text = font2.render('EXIT', True, 'black')
-continue_button = pygame.Rect(200, 160, 200, 80)
+continue_button = pygame.Rect(300, 180, 200, 80)
 continue_text = font2.render('CONTINUE', True, 'black')
 counter = data['counter']
 clock = pygame.time.Clock()
 start = True
+# scene = 'game2'
 scene = 'menu'
 # scene = 'login'
 active_field = None
@@ -49,6 +50,45 @@ show_password = False
 count_continue = 0
 count_enemy_death_animation = 0
 start_x.X = data['start_x']
+level = data['level']
+
+def game_work():
+    global count_continue, counter, text_food, scene
+    if level == 1: 
+        background.show_sprite()
+    elif level == 2:
+        background2.show_sprite()
+    finish.show_sprite()
+    for enemy in enemy_list:
+        if enemy.HEARTS > 0:
+            enemy.show_sprite()
+            enemy.check_move(hero)
+            enemy.hero_colision(hero)
+        else:
+            if count_enemy_death_animation == 0:
+                enemy.enemy_death()
+    for i in list_block:
+        i.show_sprite()
+    for i in list_food:
+        if i.collision_food(hero):
+            counter += 1
+            text_food = font.render(f"{0 + counter}", True, (0, 0, 0))
+        if count_continue > 0:
+            count_continue = 0
+            text_food = font.render(f"{0 + counter}", True, (0, 0, 0))
+        if counter > 0:
+            not_food.show_sprite()
+            if counter < 10:
+                screen.blit(text_food, (737, 19))
+            else:
+                screen.blit(text_food, (726, 19))
+    if hero.HEARTS > 0:
+        hero.show_sprite()
+        hero.hero_fell()
+        hero.move(list_block, list_food, enemy_list, start_x, finish)
+        hero.jump()
+    else:
+        scene = 'menu'
 try:
     for i in range(len(enemy_list)):
         enemy_list[i].X = data['enemies'][i]['enemy_x']
@@ -69,7 +109,7 @@ while start:
                 "start_x" : start_x.X,
                 "hero_x" : hero.X,
                 "hero_y" : hero.Y,
-                "level" : 1,
+                "level" : level,
                 "counter" : counter,
                 'enemies' : [],
                 "food": []
@@ -77,7 +117,6 @@ while start:
             for enemy in enemy_list:
                 enemy_dict = {
                     'enemy_x' : enemy.X,
-            #         'enemy_y' : enemy.Y,
                     "enemy_hearts" : enemy.HEARTS,
                     'direction' : enemy.DIRECTION
                 }
@@ -151,8 +190,8 @@ while start:
                             text_input_password += event.unicode
         if scene == 'menu':
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if hero.HEARTS > 0:
-                    if continue_button.collidepoint(pygame.mouse.get_pos()):
+                if continue_button.collidepoint(pygame.mouse.get_pos()):
+                    if hero.HEARTS > 0:
                         count_continue += 1
                         count_enemy_death_animation += 1
                         for i in list_block:
@@ -162,37 +201,40 @@ while start:
                         for i in range(len(enemy_list)):     
                             enemy_list[i].X = data['enemies'][i]['enemy_x']
                         finish.X += data['start_x']
-                        scene = 'game'
-    if scene == 'game':
-        background.show_sprite()
-        finish.show_sprite()
-        for enemy in enemy_list:
-            if enemy.HEARTS > 0:
-                enemy.show_sprite()
-                enemy.check_move(hero)
-                enemy.hero_colision(hero)
-            else:
-                if count_enemy_death_animation == 0:
-                    enemy.enemy_death()
-        for i in list_block:
-            i.show_sprite()
-        for i in list_food:
-            if i.collision_food(hero):
-                counter += 1
-                text_food = font.render(f"{0 + counter}", True, (0, 0, 0))
-            if count_continue > 0:
-                count_continue = 0
-                text_food = font.render(f"{0 + counter}", True, (0, 0, 0))
-            if counter > 0:
-                not_food.show_sprite()
-                screen.blit(text_food, (737, 19))
-        if hero.HEARTS > 0:
-            hero.show_sprite()
-            hero.move(list_block, list_food, enemy_list, start_x, finish)
-            hero.jump()
-        else:
-            scene = 'menu'
-        hero.hero_fell()
+                        scene = f'game{level}'
+                elif play_button.collidepoint(pygame.mouse.get_pos()):
+                    level = 1
+                    start_x.X = 0
+                    counter = 0
+                    count_continue = 0
+                    for i in range(len(list_block)):
+                        list_block[i].X = list_block_x[i]
+                    for i in range(len(list_food)):
+                        list_food[i].X = list_food_x[i]
+                        list_food[i].Y = list_food_y[i]
+                    for i in range(len(enemy_list)):
+                        enemy_list[i].X = enemy_list_x[i]
+                        enemy_list[i].HEARTS = 1
+                        enemy_list[i].DIRECTION = enemy_list_direction[i]
+                    finish.X = 1840
+                    hero.X = 100
+                    hero.Y = 250
+                    hero.HEARTS = 1
+                    scene = 'game1'
+                elif exit_button.collidepoint(pygame.mouse.get_pos()):
+                    start = False
+    if scene == 'game1':
+        game_work()
+        if hero.finish_colision(finish):
+            hero.X = 100
+            hero.Y = 400
+            map_creation(game_matrix2)
+            start_x.X = 0
+            finish.X = 1840
+            level = 2
+            scene = 'game2'
+    elif scene == 'game2':
+        game_work()
     elif scene == 'login' or scene == 'register':
         screen.fill((0, 0, 0))
         background_login.show_sprite()
@@ -237,32 +279,13 @@ while start:
         show_password_icon.show_sprite()
     elif scene == 'menu':
         screen.fill((0, 0, 0))
+        background_menu.show_sprite()
         pygame.draw.rect(screen, (100, 200, 100), play_button)
-        screen.blit(play_text, (256, 63))
-        if play_button.collidepoint(pygame.mouse.get_pos()):
-            start_x.X = 0
-            counter = 0
-            count_continue = 0
-            for i in range(len(list_block)):
-                list_block[i].X = list_block_x[i]
-            for i in range(len(list_food)):
-                list_food[i].X = list_food_x[i]
-                list_food[i].Y = list_food_y[i]
-            for i in range(len(enemy_list)):
-                enemy_list[i].X = enemy_list_x[i]
-                enemy_list[i].HEARTS = 1
-                enemy_list[i].DIRECTION = enemy_list_direction[i]
-            finish.X = 1840
-            hero.X = 100
-            hero.Y = 250
-            hero.HEARTS = 1
-            scene = 'game'
+        screen.blit(play_text, (356, 63))
         pygame.draw.rect(screen, (200, 100, 100), exit_button)
-        screen.blit(exit_text, (256, 303))
-        if exit_button.collidepoint(pygame.mouse.get_pos()):
-            start = False
+        screen.blit(exit_text, (356, 343))
         pygame.draw.rect(screen, (100, 200, 100), continue_button)
-        screen.blit(continue_text, (205, 183))
+        screen.blit(continue_text, (305, 203))
     pygame.display.flip()
 connection.commit()
 connection.close()

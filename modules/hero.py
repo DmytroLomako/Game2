@@ -156,3 +156,9 @@ class Hero(Person):
             animation = 0
             self.IDLE_ANIMATION = 0
         self.IMAGE_NAME = f'player/idle/{animation}.png'
+    def finish_colision(self, finish):
+        global scene
+        hero_rect = Rect(self.X, self.Y, self.WIDTH, self.HEIGHT)
+        finish_rect = Rect(finish.X, finish.Y, finish.WIDTH, finish.HEIGHT)
+        if hero_rect.colliderect(finish_rect):
+            return True

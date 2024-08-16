@@ -71,5 +71,7 @@ class Person(Sprite):
                 self.C = False
         
 background = Sprite(800, 400, 0, 0, 'screen/1.jpeg')
+background2 = Sprite(800, 400, 0, 0, 'screen/2.png')
+background_menu = Sprite(800, 450, 0, 0, 'screen/1.jpeg')
 background_login = Sprite(800, 450, 0, 0, 'login/login.jpg')
 background_login2 = Sprite(300, 410, 250, 20, 'login/login2.png')
