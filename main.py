@@ -11,7 +11,7 @@ pygame.display.set_caption("Game")
 
 with open('data.json', 'r') as f:
     data = json.load(f)
-hero = Hero(50, 50, data['hero_x'], data['hero_y'], 'player/idle/0.png', 4, 23, 25)
+hero = Hero(50, 50, data['hero_x'], data['hero_y'], 'player/idle/0.png', 4, 3, 5)
 
 not_food = Sprite(40, 40, 760, 10, 'food/0.png')
 font = pygame.font.Font(None, 43)
@@ -40,8 +40,6 @@ finish_text = font2.render('FINISH', True, 'black')
 counter = data['counter']
 clock = pygame.time.Clock()
 start = True
-scene = 'menu'
-# scene = 'finish'
 scene = 'login'
 active_field = None
 blue_color = (127, 184, 245)
